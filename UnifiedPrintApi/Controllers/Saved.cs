@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using UnifiedPrintApi.Model.Get;
 using UnifiedPrintApi.Model.Interfaces;
 using UnifiedPrintApi.Model.Post;
 
@@ -9,7 +10,7 @@ namespace UnifiedPrintApi.Controllers;
 public class Saved : ControllerBase
 {
     [HttpGet("{token}")]
-    public List<IApiPost> GetSavedPosts(string token)
+    public SavedToken GetSavedPosts(string token)
     {
         return new();
     }

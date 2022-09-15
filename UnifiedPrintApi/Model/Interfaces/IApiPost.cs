@@ -1,10 +1,12 @@
-﻿namespace UnifiedPrintApi.Model.Interfaces;
+﻿using UnifiedPrintApi.Model.Interfaces.Generic;
+
+namespace UnifiedPrintApi.Model.Interfaces;
 
 public interface IApiPost : IApiPreviewPost
 {
     string Description { get; }
-    List<Uri> Images { get; }
-    List<Uri> Downloads { get; }
+    List<GenericFile> Images { get; }
+    List<GenericFile> Downloads { get; }
     DateTimeOffset Added { get; }
     DateTimeOffset Modified { get; }
     long DownloadCount { get; }

@@ -6,4 +6,5 @@ public static class GenericExtensions
     public static GenericApiDescription Generic(this IApiDescription desc) => new(desc);
     public static GenericApiPost Generic(this IApiPost post) => new(post);
     public static GenericApiPreviewPost Generic(this IApiPreviewPost post) => new(post);
+    public static GenericApiPreviewPosts Generic(this IApiPreviewPosts posts) => new(posts);
 }

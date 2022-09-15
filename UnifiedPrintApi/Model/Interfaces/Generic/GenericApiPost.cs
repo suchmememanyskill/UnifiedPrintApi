@@ -3,8 +3,8 @@
 public class GenericApiPost : GenericApiPreviewPost, IApiPost
 {
     public string Description { get; }
-    public List<Uri> Images { get; }
-    public List<Uri> Downloads { get; }
+    public List<GenericFile> Images { get; }
+    public List<GenericFile> Downloads { get; }
     public DateTimeOffset Added { get; }
     public DateTimeOffset Modified { get; }
     public long DownloadCount { get; }

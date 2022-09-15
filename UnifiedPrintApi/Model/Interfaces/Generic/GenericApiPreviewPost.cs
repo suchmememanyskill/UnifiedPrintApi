@@ -1,4 +1,6 @@
-﻿namespace UnifiedPrintApi.Model.Interfaces.Generic;
+﻿using System.Text.Json.Serialization;
+
+namespace UnifiedPrintApi.Model.Interfaces.Generic;
 
 public class GenericApiPreviewPost : IApiPreviewPost
 {
@@ -7,6 +9,8 @@ public class GenericApiPreviewPost : IApiPreviewPost
     public Uri Thumbnail { get; }
     public Uri Website { get; }
     public IApiAuthor Author { get; }
+    [JsonIgnore]
+    public IApiDescription Api { get; }
 
     public GenericApiPreviewPost(IApiPreviewPost post)
     {
@@ -15,5 +19,6 @@ public class GenericApiPreviewPost : IApiPreviewPost
         Thumbnail = post.Thumbnail;
         Website = post.Website;
         Author = post.Author.Generic();
+        Api = post.Api;
     }
 }
