@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace UnifiedPrintApi.Service;
 
@@ -15,7 +16,7 @@ public class Cache
         if (_cache.ContainsKey(key))
         {
             CacheEntry entry = _cache[key];
-            if (entry.ExpiryTime > DateTimeOffset.Now)
+            if (entry.ExpiryTime == null || entry.ExpiryTime > DateTimeOffset.Now)
             {
                 return (T)entry.Item;
             }
@@ -30,7 +31,14 @@ public class Cache
         _cache[key] = cache;
         return value;
     }
-    
+
+    public void AddCacheValue(string key, object value) => AddCacheValue(key, value, TimeSpan.FromHours(3));
+
+    public void AddCacheValue(string key, object value, TimeSpan? expireFromNow)
+    {
+        _cache[key] = new(value, DateTimeOffset.Now + expireFromNow);
+    }
+
     public static string Hash(string input)
     {
         using var sha1 = SHA1.Create();

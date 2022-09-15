@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UnifiedPrintApi.Model.Interfaces;
+using UnifiedPrintApi.Model.Interfaces.Generic;
 using UnifiedPrintApi.Service;
 using UnifiedPrintApi.Service.Thingiverse;
 
@@ -9,21 +10,23 @@ namespace UnifiedPrintApi.Controllers;
 [Route("[controller]")]
 public class Posts : ControllerBase
 {
-    private ThingiverseApi _thingiverse;
+    private Apis _apis;
     private Cache _cache;
-    public Posts(ThingiverseApi thingiverseApi, Cache cache)
+    private Storage _storage;
+    public Posts(Apis apis, Cache cache, Storage storage)
     {
-        _thingiverse = thingiverseApi;
+        _apis = apis;
         _cache = cache;
+        _storage = storage;
     }
 
     [HttpGet("services")]
-    public List<IApiDescription> GetApis() => new() {_thingiverse};
+    public List<IApiDescription> GetApis() => _apis.GetApis();
 
     [HttpGet("list/{apiName}/search")]
     public IApiPreviewPosts? GetPostsSearch(string apiName, string query, int page = 1, int perPage = 20)
     {
-        IApiDescription? desc = GetApis().Find(x => x.Slug == apiName);
+        IApiDescription? desc = _apis.GetApi(apiName);
 
         if (desc == null)
         {
@@ -39,7 +42,7 @@ public class Posts : ControllerBase
     [HttpGet("list/{apiName}/{sortType}")]
     public IApiPreviewPosts? GetPosts(string apiName, string sortType, int page = 1, int perPage = 20)
     {
-        IApiDescription? desc = GetApis().Find(x => x.Slug == apiName);
+        IApiDescription? desc = _apis.GetApi(apiName);
 
         if (desc == null)
         {
@@ -47,7 +50,7 @@ public class Posts : ControllerBase
             return null;
         }
 
-        SortType? type = desc.SortTypes.Find(x => x.UriName == sortType);
+        SortType? type = desc.GetSortType(sortType);
         
         if (type == null)
         {
@@ -58,22 +61,17 @@ public class Posts : ControllerBase
         string key = Cache.Hash($"{apiName}:s:{sortType}:{page}:{perPage}");
         return _cache.CacheValue(key, () => desc.GetPosts(type, page, perPage));
     }
-
+    
     [HttpGet("universal/{uid}")]
     public IApiPost? Post(string uid)
     {
-        string service = uid.Split(":")[0];
-        string id = uid.Substring(service.Length + 1);
-        
-        IApiDescription? api = GetApis().Find(x => x.Slug == service);
+        IApiPost? post = _apis.GetUID(uid);
 
-        if (api == null)
+        if (post == null)
         {
             Response.StatusCode = 404;
-            return null;
         }
-        
-        string key = Cache.Hash(uid);
-        return _cache.CacheValue(key, () => api.GetPostById(id));
+
+        return post;
     }
 }

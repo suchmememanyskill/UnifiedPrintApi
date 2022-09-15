@@ -41,7 +41,7 @@ public class ThingiverseApi : IApiDescription
     {
         string hash = Cache.Hash(url);
         return _cache.CacheValue<string>(hash,
-            () => Request.GetString(new Uri(url), new() {{"Authorization", apiKey}}), TimeSpan.FromHours(2));
+            () => Request.GetString(new Uri(url), new() {{"Authorization", apiKey}}));
     }
 
     public IApiPreviewPosts GetPosts(SortType type, int page, int perPage)

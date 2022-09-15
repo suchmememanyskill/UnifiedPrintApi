@@ -7,4 +7,7 @@ public static class GenericExtensions
     public static GenericApiPost Generic(this IApiPost post) => new(post);
     public static GenericApiPreviewPost Generic(this IApiPreviewPost post) => new(post);
     public static GenericApiPreviewPosts Generic(this IApiPreviewPosts posts) => new(posts);
+
+    public static SortType? GetSortType(this IApiDescription api, string uriName) =>
+        api.SortTypes.Find(x => x.UriName == uriName);
 }

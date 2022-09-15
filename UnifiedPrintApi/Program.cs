@@ -12,6 +12,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<Cache>();
 builder.Services.AddSingleton<ThingiverseApi>();
+builder.Services.AddSingleton<Apis>();
+builder.Services.AddSingleton<Storage>();
 
 var app = builder.Build();
 

@@ -2,13 +2,13 @@
 
 public class GenericApiPost : GenericApiPreviewPost, IApiPost
 {
-    public string Description { get; }
-    public List<GenericFile> Images { get; }
-    public List<GenericFile> Downloads { get; }
-    public DateTimeOffset Added { get; }
-    public DateTimeOffset Modified { get; }
-    public long DownloadCount { get; }
-    public long LikeCount { get; }
+    public string Description { get; set; }
+    public List<GenericFile> Images { get; set; }
+    public List<GenericFile> Downloads { get; set; }
+    public DateTimeOffset Added { get; set; }
+    public DateTimeOffset Modified { get; set; }
+    public long DownloadCount { get; set; }
+    public long LikeCount { get; set; }
 
     public GenericApiPost(IApiPost post)
         : base(post)
@@ -20,5 +20,9 @@ public class GenericApiPost : GenericApiPreviewPost, IApiPost
         Modified = post.Modified;
         DownloadCount = post.DownloadCount;
         LikeCount = post.LikeCount;
+    }
+
+    public GenericApiPost()
+    {
     }
 }
