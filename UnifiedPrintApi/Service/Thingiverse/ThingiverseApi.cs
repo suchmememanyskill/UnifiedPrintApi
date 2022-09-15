@@ -42,24 +42,57 @@ public class ThingiverseApi : IApiDescription
         string hash = Cache.Hash(url);
         return _cache.CacheValue<string>(hash,
             () => Request.GetString(new Uri(url), new() {{"Authorization", apiKey}}), TimeSpan.FromHours(2));
-
     }
-    
+
     public IApiPreviewPosts GetPosts(SortType type, int page, int perPage)
+        => GetPostsBySearchOrSortType(page, perPage, type);
+
+    public IApiPreviewPosts GetPostsBySearch(string search, int page, int perPage)
+        => GetPostsBySearchOrSortType(page, perPage, null, search);
+    public IApiPost GetPostById(string id)
+    {
+        string url = $"https://api.thingiverse.com/things/{id}";
+        string? response = MakeRequest(url);
+        
+        if (response == null)
+            throw new Exception("Request failed");
+        
+        RequestSpecificThing parsedResponse = JsonConvert.DeserializeObject<RequestSpecificThing>(response);
+        ThingiversePost post = new(this, parsedResponse);
+        post.GetDownloads();
+        post.GetImages();
+        return post.Generic();
+    }
+
+    private IApiPreviewPosts GetPostsBySearchOrSortType(int page, int perPage, SortType? sortType = null, string? search = null)
     {
         int min = (page - 1) * perPage;
         int max = min + perPage;
         int apiLimit = 20;
         int current = min / apiLimit * apiLimit;
         int diff = min % apiLimit;
-        ThingiverseSortType ttype = ActualSortTypes.Find(x => x.Name == type.DisplayName)!;
+        ThingiverseSortType? ttype = ActualSortTypes.Find(x => x.Name == sortType?.DisplayName);
+
+        if ((sortType != null && search != null) || (sortType == null && search == null))
+            throw new ArgumentException("Sort and search was provided, or neither were provided");
 
         long total = -1;
         List<ThingiversePreviewPost> posts = new();
 
+        if (sortType != null && ttype == null)
+            throw new Exception("Invalid sort type");
+
         for (; max > current; current += apiLimit)
         {
-            string url = $"https://api.thingiverse.com/search/?page={current / apiLimit + 1}&per_page={apiLimit}&{ttype.UrlPart}&type=things";
+            string url;
+
+            if (ttype != null)
+                url =
+                    $"https://api.thingiverse.com/search/?page={current / apiLimit + 1}&per_page={apiLimit}&{ttype.UrlPart}&type=things";
+            else
+                url =
+                    $"https://api.thingiverse.com/search/{search}?page={current / apiLimit + 1}&per_page={apiLimit}&sort=relevant&type=things";
+            
             string? response = MakeRequest(url);
 
             if (response == null)
@@ -76,25 +109,5 @@ public class ThingiverseApi : IApiDescription
         }
 
         return new GenericApiPreviewPosts(posts.Skip(diff).Take(max - min), total);
-    }
-
-    public IApiPreviewPosts GetPostsBySearch(string search, int page, int perPage)
-    {
-        throw new NotImplementedException();
-    }
-
-    public IApiPost GetPostById(string id)
-    {
-        string url = $"https://api.thingiverse.com/things/{id}";
-        string? response = MakeRequest(url);
-        
-        if (response == null)
-            throw new Exception("Request failed");
-        
-        RequestSpecificThing parsedResponse = JsonConvert.DeserializeObject<RequestSpecificThing>(response);
-        ThingiversePost post = new(this, parsedResponse);
-        post.GetDownloads();
-        post.GetImages();
-        return post.Generic();
     }
 }

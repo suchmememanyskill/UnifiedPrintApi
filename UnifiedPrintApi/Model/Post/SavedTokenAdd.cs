@@ -2,5 +2,5 @@
 
 public class SavedTokenAdd
 {
-    public string PostId { get; set; }
+    public string UID { get; set; }
 }

@@ -21,9 +21,18 @@ public class Posts : ControllerBase
     public List<IApiDescription> GetApis() => new() {_thingiverse};
 
     [HttpGet("list/{apiName}/search")]
-    public List<IApiPreviewPost> GetPostsSearch(string apiName, string query, int page = 1, int perPage = 20)
+    public IApiPreviewPosts? GetPostsSearch(string apiName, string query, int page = 1, int perPage = 20)
     {
-        return new();
+        IApiDescription? desc = GetApis().Find(x => x.Slug == apiName);
+
+        if (desc == null)
+        {
+            Response.StatusCode = 404;
+            return null;
+        }
+        
+        string key = Cache.Hash($"{apiName}:q:{query}:{page}:{perPage}");
+        return _cache.CacheValue(key, () => desc.GetPostsBySearch(query, page, perPage));
     }
     
     // TODO: Limit
@@ -46,7 +55,7 @@ public class Posts : ControllerBase
             return null;
         }
 
-        string key = Cache.Hash($"{apiName}:{page}:{perPage}");
+        string key = Cache.Hash($"{apiName}:s:{sortType}:{page}:{perPage}");
         return _cache.CacheValue(key, () => desc.GetPosts(type, page, perPage));
     }
 
