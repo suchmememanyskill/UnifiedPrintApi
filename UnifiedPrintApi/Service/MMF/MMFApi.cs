@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using UnifiedPrintApi.Model.Interfaces;
 using UnifiedPrintApi.Model.Interfaces.Generic;
 using UnifiedPrintApi.Service.MMF.Models;
@@ -16,7 +17,7 @@ public class MMFApi : IApiDescription
     public static string apiKey = "d7c64faa-aa6e-4645-b47a-95cf3ddc991a"; // This is a personal API key. Please do not use this
     public string Name => "MyMiniFactory";
     public string Color => "#00C4A6";
-    
+
     public static readonly List<MMFSortType> ActualSortTypes = new()
     {
         new("Featured Popular", "&featured=1&sortBy=popularity"),
@@ -31,6 +32,14 @@ public class MMFApi : IApiDescription
     public List<SortType> SortTypes => ActualSortTypes.Select(x => new SortType(x.Name, x.InternalName)).ToList();
     public Uri Site => new("https://www.myminifactory.com/");
     public string Description => "Provides access to the MMF Api";
+    private Cache _cache;
+    private Storage _storage;
+
+    public MMFApi(Cache cache, Storage storage)
+    {
+        _cache = cache;
+        _storage = storage;
+    }
 
     public IApiPreviewPosts GetPosts(SortType type, int page, int perPage)
         => GetPostsBySearchOrSortType(page, perPage, type);
@@ -40,7 +49,20 @@ public class MMFApi : IApiDescription
 
     public IApiPost GetPostById(string id)
     {
-        throw new NotImplementedException();
+        string url = $"https://www.myminifactory.com/api/v2/objects/{id}?key={apiKey}";
+        string? response = _cache.CacheValue(Cache.Hash(url), () => Request.GetString(new(url)));
+
+        if (response == null)
+            throw new Exception("Response is empty");
+
+        FetchSpecificObject result = JsonConvert.DeserializeObject<FetchSpecificObject>(response);
+        return new MMFPost(this, result, _storage.BaseUrl!);
+    }
+
+    public Stream GetDownloadFromPost(string id, string fileName)
+    {
+        MMFPost post = (MMFPost)GetPostById(id);
+        return post.Download(fileName);
     }
 
     private IApiPreviewPosts GetPostsBySearchOrSortType(int page, int perPage, SortType? sortType = null,

@@ -96,4 +96,6 @@ public class Storage
 
         File.WriteAllText(path, JsonConvert.SerializeObject(data));
     }
+    
+    public string? BaseUrl { get; set; }
 }

@@ -22,7 +22,6 @@ namespace Utils
                     client.Headers[kv.Key] = kv.Value;
                 return client.DownloadData(uri);
             }
-                
         }
 
         public static async Task<byte[]> GetAsync(Uri uri, Dictionary<string, string> headers)

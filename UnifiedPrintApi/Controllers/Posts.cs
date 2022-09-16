@@ -65,13 +65,15 @@ public class Posts : ControllerBase
     [HttpGet("universal/{uid}")]
     public IApiPost? Post(string uid)
     {
+        _storage.BaseUrl = $"{Request.Scheme}://{Request.Host.Value}"; // Hack
         IApiPost? post = _apis.GetUID(uid);
 
         if (post == null)
         {
             Response.StatusCode = 404;
+            return null;
         }
 
-        return post;
+        return post.Generic();
     }
 }

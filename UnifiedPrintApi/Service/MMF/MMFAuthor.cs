@@ -5,12 +5,21 @@ namespace UnifiedPrintApi.Service.MMF;
 
 public class MMFAuthor : IApiAuthor
 {
-    private Hit _hit;
+    public MMFAuthor(Hit hit)
+    {
+        Name = hit.UserName;
+        Website = hit.UserUrl;
+        Thumbnail = hit.UserImg;
+    }
 
-    public MMFAuthor(Hit hit) => _hit = hit;
-
-
-    public string Name => _hit.UserName;
-    public Uri Website => _hit.UserUrl;
-    public Uri Thumbnail => _hit.UserImg;
+    public MMFAuthor(Designer designer)
+    {
+        Name = designer.Username;
+        Website = designer.ProfileUrl;
+        Thumbnail = designer.AvatarThumbnailUrl;
+    }
+    
+    public string Name { get; }
+    public Uri Website { get; }
+    public Uri Thumbnail { get; }
 }
