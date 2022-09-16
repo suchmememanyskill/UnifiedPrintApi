@@ -1,5 +1,5 @@
-﻿using Service.Thingiverse.Models;
-using UnifiedPrintApi.Model.Interfaces;
+﻿using UnifiedPrintApi.Model.Interfaces;
+using UnifiedPrintApi.Service.Thingiverse.Models;
 
 namespace UnifiedPrintApi.Service.Thingiverse;
 

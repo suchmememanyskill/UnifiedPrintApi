@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
-using Service.Thingiverse.Models;
 using UnifiedPrintApi.Model.Interfaces;
 using UnifiedPrintApi.Model.Interfaces.Generic;
+using UnifiedPrintApi.Service.Thingiverse.Models;
 using Utils;
 
 namespace UnifiedPrintApi.Service.Thingiverse;

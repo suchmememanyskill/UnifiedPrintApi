@@ -1,4 +1,5 @@
 ﻿using UnifiedPrintApi.Model.Interfaces;
+using UnifiedPrintApi.Service.MMF;
 using UnifiedPrintApi.Service.Thingiverse;
 
 namespace UnifiedPrintApi.Service;
@@ -6,16 +7,19 @@ namespace UnifiedPrintApi.Service;
 public class Apis
 {
     private ThingiverseApi _thingiverse;
+    private MMFApi _mmf;
     private Cache _cache;
     private List<IApiDescription> _apis;
 
-    public Apis(ThingiverseApi thingiverse, Cache cache)
+    public Apis(ThingiverseApi thingiverse, MMFApi mmf, Cache cache)
     {
         _thingiverse = thingiverse;
         _cache = cache;
+        _mmf = mmf;
         _apis = new()
         {
-            _thingiverse
+            _thingiverse,
+            _mmf
         };
     }
 

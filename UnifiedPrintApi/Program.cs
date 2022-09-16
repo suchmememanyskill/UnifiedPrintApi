@@ -1,4 +1,5 @@
 using UnifiedPrintApi.Service;
+using UnifiedPrintApi.Service.MMF;
 using UnifiedPrintApi.Service.Thingiverse;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<Cache>();
 builder.Services.AddSingleton<ThingiverseApi>();
+builder.Services.AddSingleton<MMFApi>();
 builder.Services.AddSingleton<Apis>();
 builder.Services.AddSingleton<Storage>();
 
