@@ -24,56 +24,89 @@ public class Posts : ControllerBase
     public List<IApiDescription> GetApis() => _apis.GetApis();
 
     [HttpGet("list/{apiName}/search")]
-    public IApiPreviewPosts? GetPostsSearch(string apiName, string query, int page = 1, int perPage = 20)
+    [ProducesResponseType(typeof(IApiPreviewPosts), StatusCodes.Status200OK)]
+    public object? GetPostsSearch(string apiName, string query, int page = 1, int perPage = 20)
     {
-        IApiDescription? desc = _apis.GetApi(apiName);
-
-        if (desc == null)
+        try
         {
-            Response.StatusCode = 404;
-            return null;
+            if (perPage > 50)
+                throw new Exception("That's a little much don't you think");
+            
+            IApiDescription? desc = _apis.GetApi(apiName);
+
+            if (desc == null)
+            {
+                Response.StatusCode = 404;
+                return "Api not found";
+            }
+
+            string key = Cache.Hash($"{apiName}:q:{query}:{page}:{perPage}");
+            return _cache.CacheValue(key, () => desc.GetPostsBySearch(query, page, perPage).Generic());
         }
-        
-        string key = Cache.Hash($"{apiName}:q:{query}:{page}:{perPage}");
-        return _cache.CacheValue(key, () => desc.GetPostsBySearch(query, page, perPage).Generic());
+        catch (Exception e)
+        {
+            Response.StatusCode = 400;
+            return e.Message;
+        }
     }
     
     // TODO: Limit
     [HttpGet("list/{apiName}/{sortType}")]
-    public IApiPreviewPosts? GetPosts(string apiName, string sortType, int page = 1, int perPage = 20)
+    [ProducesResponseType(typeof(IApiPreviewPosts), StatusCodes.Status200OK)]
+    public object? GetPosts(string apiName, string sortType, int page = 1, int perPage = 20)
     {
-        IApiDescription? desc = _apis.GetApi(apiName);
-
-        if (desc == null)
+        try
         {
-            Response.StatusCode = 404;
-            return null;
-        }
+            if (perPage > 50)
+                throw new Exception("That's a little much don't you think");
 
-        SortType? type = desc.GetSortType(sortType);
-        
-        if (type == null)
+            IApiDescription? desc = _apis.GetApi(apiName);
+
+            if (desc == null)
+            {
+                Response.StatusCode = 404;
+                return "Api not found";
+            }
+
+            SortType? type = desc.GetSortType(sortType);
+
+            if (type == null)
+            {
+                Response.StatusCode = 404;
+                return "Sort type not found";
+            }
+
+            string key = Cache.Hash($"{apiName}:s:{sortType}:{page}:{perPage}");
+            return _cache.CacheValue(key, () => desc.GetPosts(type, page, perPage).Generic());
+        }
+        catch (Exception e)
         {
-            Response.StatusCode = 404;
-            return null;
+            Response.StatusCode = 400;
+            return e.Message;
         }
-
-        string key = Cache.Hash($"{apiName}:s:{sortType}:{page}:{perPage}");
-        return _cache.CacheValue(key, () => desc.GetPosts(type, page, perPage).Generic());
     }
     
     [HttpGet("universal/{uid}")]
-    public IApiPost? Post(string uid)
+    [ProducesResponseType(typeof(IApiPost), StatusCodes.Status200OK)]
+    public object? Post(string uid)
     {
         _storage.BaseUrl = $"{Request.Scheme}://{Request.Host.Value}"; // Hack
-        IApiPost? post = _apis.GetUID(uid);
-
-        if (post == null)
+        try
         {
-            Response.StatusCode = 404;
-            return null;
-        }
+            IApiPost? post = _apis.GetUID(uid);
+            
+            if (post == null)
+            {
+                Response.StatusCode = 404;
+                return "Id not found";
+            }
 
-        return post.Generic();
+            return post.Generic();
+        }
+        catch (Exception e)
+        {
+            Response.StatusCode = 400;
+            return e.Message;
+        }
     }
 }
