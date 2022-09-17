@@ -23,7 +23,7 @@ public class PrintablesPost : IApiPost
     public IApiAuthor Author => new PrintablesAuthor(_data.User);
     public IApiDescription Api => _api;
     public string Description => _data.Description; // TODO: De-Html-Ify
-    public List<GenericFile> Images => _data.Images.Select(x => new GenericFile(x.Id, x.ToUri())).ToList(); // TODO: Return a sensible file name
+    public List<GenericFile> Images => _data.Images.Select(x => new GenericFile(x.ToUri().AbsoluteUri.Split("/").Last(), x.ToUri())).ToList();
     public List<GenericFile> Downloads => _data.Models.Select(x => new GenericFile(x.Name, x.ToUri())).ToList();
     public DateTimeOffset Added => _data.Published;
     public DateTimeOffset Modified => _data.Modified;

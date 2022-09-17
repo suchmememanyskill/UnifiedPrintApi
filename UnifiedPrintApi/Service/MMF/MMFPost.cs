@@ -27,7 +27,7 @@ public class MMFPost : IApiPost
     public IApiDescription Api => _api;
     public string Description => _data.Description;
     public List<GenericFile> Images =>
-        _data.Images.Select(x => new GenericFile(x.Id.ToString(), x.Standard.Url)).ToList(); // TODO: Return a sensible file name
+        _data.Images.Select(x => new GenericFile($"{x.Id}-{x.Standard.Url.AbsoluteUri.Split("/").Last()}", x.Standard.Url)).ToList();
 
     public List<GenericFile> Downloads => _data.Files.Items
         .Select(x => new GenericFile(x.Filename, new Uri($"{_baseUrl}/mmf/{Id}/download/{x.Filename}"))).ToList();
