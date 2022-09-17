@@ -42,8 +42,8 @@ namespace UnifiedPrintApi.Service.Printables.Model
         [JsonProperty("slug")]
         public string Slug { get; set; }
         
-        [JsonProperty("images")]
-        public List<PrintablesImage> Images { get; set; }
+        [JsonProperty("images", NullValueHandling = NullValueHandling.Ignore)]
+        public virtual List<PrintablesImage> Images { get; set; }
         
         [JsonProperty("user")]
         public PrintablesUser User { get; set; }
@@ -54,6 +54,15 @@ namespace UnifiedPrintApi.Service.Printables.Model
 
     public class PrintableItemSearch : PrintablesItem
     {
+        public override List<PrintablesImage> Images => new()
+        {
+            new()
+            {
+                FilePath = MainThumbnail,
+                Id = "Thumbnail"
+            }
+        };
+
         [JsonProperty("mainImage")]
         public string MainThumbnail { get; set; }
         
