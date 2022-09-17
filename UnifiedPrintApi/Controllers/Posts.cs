@@ -35,7 +35,7 @@ public class Posts : ControllerBase
         }
         
         string key = Cache.Hash($"{apiName}:q:{query}:{page}:{perPage}");
-        return _cache.CacheValue(key, () => desc.GetPostsBySearch(query, page, perPage));
+        return _cache.CacheValue(key, () => desc.GetPostsBySearch(query, page, perPage).Generic());
     }
     
     // TODO: Limit
@@ -59,7 +59,7 @@ public class Posts : ControllerBase
         }
 
         string key = Cache.Hash($"{apiName}:s:{sortType}:{page}:{perPage}");
-        return _cache.CacheValue(key, () => desc.GetPosts(type, page, perPage));
+        return _cache.CacheValue(key, () => desc.GetPosts(type, page, perPage).Generic());
     }
     
     [HttpGet("universal/{uid}")]

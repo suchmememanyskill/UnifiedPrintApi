@@ -7,13 +7,13 @@ public class GenericApiPreviewPosts : IApiPreviewPosts
 
     public GenericApiPreviewPosts(IApiPreviewPosts posts)
     {
-        PreviewPosts = posts.PreviewPosts;
+        PreviewPosts = posts.PreviewPosts.Select(x => (IApiPreviewPost)x.Generic()).ToList();
         TotalResults = posts.TotalResults;
     }
 
     public GenericApiPreviewPosts(IEnumerable<IApiPreviewPost> posts, long totalResults = -1)
     {
-        PreviewPosts = posts.ToList();
+        PreviewPosts = posts.Select(x => (IApiPreviewPost)x.Generic()).ToList();
         TotalResults = totalResults;
     }
 }

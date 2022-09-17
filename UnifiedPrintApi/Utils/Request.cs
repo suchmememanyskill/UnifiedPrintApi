@@ -61,6 +61,15 @@ namespace Utils
                 return await client.DownloadStringTaskAsync(uri);
             }
         }
+        
+        public static string PostString(Uri uri, string data)
+        {
+            using (var client = new WebClient())
+            {
+                client.Headers["Content-Type"] = "application/json";
+                return client.UploadString(uri, data);
+            }
+        }
 
         public static async Task<string> PostStringAsync(Uri uri, string data)
         {

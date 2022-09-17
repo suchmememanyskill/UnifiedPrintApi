@@ -32,6 +32,18 @@ public class Cache
         return value;
     }
 
+    public bool IsCached(string key)
+    {
+        if (_cache.ContainsKey(key))
+        {
+            CacheEntry entry = _cache[key];
+            if (entry.ExpiryTime == null || entry.ExpiryTime > DateTimeOffset.Now)
+                return true;
+        }
+
+        return false;
+    }
+
     public void AddCacheValue(string key, object value) => AddCacheValue(key, value, TimeSpan.FromHours(3));
 
     public void AddCacheValue(string key, object value, TimeSpan? expireFromNow)

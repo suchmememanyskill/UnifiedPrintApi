@@ -1,5 +1,6 @@
 using UnifiedPrintApi.Service;
 using UnifiedPrintApi.Service.MMF;
+using UnifiedPrintApi.Service.Printables;
 using UnifiedPrintApi.Service.Thingiverse;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,14 +15,16 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<Cache>();
 builder.Services.AddSingleton<ThingiverseApi>();
 builder.Services.AddSingleton<MMFApi>();
+builder.Services.AddSingleton<PrintablesApi>();
 builder.Services.AddSingleton<Apis>();
 builder.Services.AddSingleton<Storage>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (File.Exists("DEBUG"))
 {
+    Console.WriteLine("Enabling SwaggerUI");
     app.UseSwagger();
     app.UseSwaggerUI();
 }
@@ -32,4 +35,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+app.Run("http://*:8520");
