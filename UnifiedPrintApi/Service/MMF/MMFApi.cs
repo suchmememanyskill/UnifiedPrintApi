@@ -47,13 +47,23 @@ public class MMFApi : IApiDescription
     public IApiPreviewPosts GetPostsBySearch(string search, int page, int perPage)
         => GetPostsBySearchOrSortType(page, perPage, null, search);
 
-    public IApiPost GetPostById(string id)
+    public IApiPost? GetPostById(string id)
     {
         string url = $"https://www.myminifactory.com/api/v2/objects/{id}?key={apiKey}";
-        string? response = _cache.CacheValue(Cache.Hash(url), () => Request.GetString(new(url)));
+        string? response = _cache.CacheValue(Cache.Hash(url), () =>
+        {
+            try
+            {
+                return Request.GetString(new(url));
+            }
+            catch
+            {
+                return null;
+            }
+        });
 
         if (response == null)
-            throw new Exception("Response is empty");
+            return null;
 
         FetchSpecificObject result = JsonConvert.DeserializeObject<FetchSpecificObject>(response);
         return new MMFPost(this, result, _storage.BaseUrl!);

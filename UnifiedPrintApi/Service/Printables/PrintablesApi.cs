@@ -113,7 +113,7 @@ public class PrintablesApi : IApiDescription
         return new GenericApiPreviewPosts(prints.Data.SearchResult.Items.Select(x => new PrintablesPreviewPost(this, x)));
     }
 
-    public IApiPost GetPostById(string id)
+    public IApiPost? GetPostById(string id)
     {
         string template = ModelTemplate;
         string json = template.Replace("{{ID}}", id);
@@ -121,6 +121,10 @@ public class PrintablesApi : IApiDescription
         string response = Request.PostString(new Uri("https://www.printables.com/graphql/"), json);
 
         PrintModelData model = JsonConvert.DeserializeObject<PrintModelData>(response);
+
+        if (model.Data.Print == null)
+            return null;
+        
         return new PrintablesPost(this, model!.Data.Print);
     }
 }

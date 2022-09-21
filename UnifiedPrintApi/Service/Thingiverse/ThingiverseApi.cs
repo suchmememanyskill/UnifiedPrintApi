@@ -49,13 +49,23 @@ public class ThingiverseApi : IApiDescription
 
     public IApiPreviewPosts GetPostsBySearch(string search, int page, int perPage)
         => GetPostsBySearchOrSortType(page, perPage, null, search);
-    public IApiPost GetPostById(string id)
+    public IApiPost? GetPostById(string id)
     {
         string url = $"https://api.thingiverse.com/things/{id}";
-        string? response = MakeRequest(url);
-        
-        if (response == null)
-            throw new Exception("Request failed");
+        string? response;
+
+        try
+        {
+            response = MakeRequest(url);
+
+            if (response == null)
+                throw new Exception("Request failed");
+        }
+        catch
+        {
+            return null;
+        }
+
         
         RequestSpecificThing parsedResponse = JsonConvert.DeserializeObject<RequestSpecificThing>(response);
         ThingiversePost post = new(this, parsedResponse);

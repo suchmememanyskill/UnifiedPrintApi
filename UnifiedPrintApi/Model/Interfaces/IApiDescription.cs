@@ -13,5 +13,5 @@ public interface IApiDescription
 
     public IApiPreviewPosts GetPosts(SortType type, int page, int perPage);
     public IApiPreviewPosts GetPostsBySearch(string search, int page, int perPage);
-    public IApiPost GetPostById(string id);
+    public IApiPost? GetPostById(string id);
 }
