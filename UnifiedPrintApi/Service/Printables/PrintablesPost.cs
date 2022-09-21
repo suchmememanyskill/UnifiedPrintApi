@@ -18,12 +18,12 @@ public class PrintablesPost : IApiPost
 
     public string Id => _data.Id;
     public string Name => _data.Name;
-    public Uri Thumbnail => Images.First().Url;
+    public GenericFile Thumbnail => Images.First();
     public Uri Website => _data.ToUri();
     public IApiAuthor Author => new PrintablesAuthor(_data.User);
     public IApiDescription Api => _api;
     public string Description => _data.Description; // TODO: De-Html-Ify
-    public List<GenericFile> Images => _data.Images.Select(x => new GenericFile(x.ToUri().AbsoluteUri.Split("/").Last(), x.ToUri())).ToList();
+    public List<GenericFile> Images => _data.Images.Select(x => new GenericFile(x.ToUri())).ToList();
     public List<GenericFile> Downloads => _data.Models.Select(x => new GenericFile(x.Name, x.ToUri())).ToList();
     public DateTimeOffset Added => _data.Published;
     public DateTimeOffset Modified => _data.Modified;

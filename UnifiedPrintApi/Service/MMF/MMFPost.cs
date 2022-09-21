@@ -21,7 +21,7 @@ public class MMFPost : IApiPost
 
     public string Id => _data.Id.ToString();
     public string Name => _data.Name;
-    public Uri Thumbnail => Images.First().Url;
+    public GenericFile Thumbnail => Images.First();
     public Uri Website => _data.Url;
     public IApiAuthor Author => new MMFAuthor(_data.Designer);
     public IApiDescription Api => _api;

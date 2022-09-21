@@ -40,7 +40,7 @@ public class ThingiversePost : IApiPost
 
     public string Id => _data.Id.ToString();
     public string Name => _data.Name;
-    public Uri Thumbnail => _data.Thumbnail;
+    public GenericFile Thumbnail => new(_data.Thumbnail);
     public Uri Website => _data.PublicUrl;
     public IApiAuthor Author => new ThingiverseAuthor(_data.Creator);
     public IApiDescription Api => _api;

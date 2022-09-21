@@ -1,8 +1,10 @@
-﻿namespace UnifiedPrintApi.Model.Interfaces;
+﻿using UnifiedPrintApi.Model.Interfaces.Generic;
+
+namespace UnifiedPrintApi.Model.Interfaces;
 
 public interface IApiAuthor
 {
     string Name { get; }
     Uri Website { get; }
-    Uri Thumbnail { get; }
+    GenericFile Thumbnail { get; }
 }

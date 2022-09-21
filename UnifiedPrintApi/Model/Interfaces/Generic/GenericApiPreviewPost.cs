@@ -7,7 +7,7 @@ public class GenericApiPreviewPost : IApiPreviewPost
     public string Id { get; set; }
     public string UniversalId { get; set; }
     public string Name { get; set; }
-    public Uri Thumbnail { get; set; }
+    public GenericFile Thumbnail { get; set; }
     public Uri Website { get; set; }
     [JsonIgnore] 
     public IApiAuthor Author => ActualAuthor;

@@ -10,4 +10,16 @@ public class GenericFile
         Name = name;
         Url = url;
     }
+
+    public GenericFile(Uri uri)
+    {
+        Url = uri;
+        Name = null;
+        if (uri != null)
+            Name = Url.AbsoluteUri.Split("/").Last();
+    }
+
+    public GenericFile()
+    {
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using UnifiedPrintApi.Model.Interfaces;
+using UnifiedPrintApi.Model.Interfaces.Generic;
 using UnifiedPrintApi.Service.Thingiverse.Models;
 
 namespace UnifiedPrintApi.Service.Thingiverse;
@@ -14,5 +15,5 @@ public class ThingiverseAuthor : IApiAuthor
 
     public string Name => _creator.Name;
     public Uri Website => _creator.PublicUrl;
-    public Uri Thumbnail => _creator.Thumbnail;
+    public GenericFile Thumbnail => new(_creator.Thumbnail);
 }

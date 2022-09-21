@@ -1,4 +1,5 @@
 ﻿using UnifiedPrintApi.Model.Interfaces;
+using UnifiedPrintApi.Model.Interfaces.Generic;
 using UnifiedPrintApi.Service.Printables.Model;
 
 namespace UnifiedPrintApi.Service.Printables;
@@ -16,7 +17,7 @@ public class PrintablesPreviewPost : IApiPreviewPost
 
     public string Id => _data.Id;
     public string Name => _data.Name;
-    public Uri Thumbnail => _data.Images.First().ToUri();
+    public GenericFile Thumbnail => new(_data.Images.First().ToUri());
     public Uri Website => _data.ToUri();
     public IApiAuthor Author => new PrintablesAuthor(_data.User);
     public IApiDescription Api => _api;
