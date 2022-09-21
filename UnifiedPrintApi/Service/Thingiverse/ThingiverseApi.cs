@@ -97,15 +97,22 @@ public class ThingiverseApi : IApiDescription
 
             if (response == null)
                 throw new Exception("Request failed");
-            
-            RequestThings parsedResponse = JsonConvert.DeserializeObject<RequestThings>(response);
-            if (total <= -1)
-                total = parsedResponse.Total;
 
-            if (parsedResponse.Hits.Count <= 0)
+            try
+            {
+                RequestThings parsedResponse = JsonConvert.DeserializeObject<RequestThings>(response);
+                if (total <= -1)
+                    total = parsedResponse.Total;
+
+                if (parsedResponse.Hits.Count <= 0)
+                    break;
+
+                posts.AddRange(parsedResponse.Hits.Select(x => new ThingiversePreviewPost(this, x)));
+            }
+            catch
+            {
                 break;
-            
-            posts.AddRange(parsedResponse.Hits.Select(x => new ThingiversePreviewPost(this, x)));
+            }
         }
 
         return new GenericApiPreviewPosts(posts.Skip(diff).Take(max - min), total);
