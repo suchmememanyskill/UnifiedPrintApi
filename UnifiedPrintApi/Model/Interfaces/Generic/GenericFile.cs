@@ -2,8 +2,8 @@
 
 public class GenericFile
 {
-    public string Name { get; }
-    public Uri Url { get; }
+    public string Name { get; set; }
+    public Uri Url { get; set; }
 
     public GenericFile(string name, Uri url)
     {

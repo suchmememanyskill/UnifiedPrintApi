@@ -28,7 +28,7 @@ public class Saved : ControllerBase
         return new()
         {
             CollectionName = storage.Name,
-            Posts = storage.UIDs.Select(x => (IApiPost)_apis.GetUID(x)?.Generic() ?? null).Where(x => x != null).ToList()
+            Posts = storage.UIDs.Select(x => _apis.GetUID(x)?.Generic() ?? null).Where(x => x != null).ToList()!
         };
     }
 
