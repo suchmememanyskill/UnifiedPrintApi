@@ -40,7 +40,7 @@ public class ThingiversePost : IApiPost
 
     public string Id => _data.Id.ToString();
     public string Name => _data.Name;
-    public GenericFile Thumbnail => new(_data.Thumbnail);
+    public GenericFile Thumbnail => new(_data.Thumbnail); // TODO: Find a better way to do this
     public Uri Website => _data.PublicUrl;
     public IApiAuthor Author => new ThingiverseAuthor(_data.Creator);
     public IApiDescription Api => _api;

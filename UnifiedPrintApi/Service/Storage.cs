@@ -14,7 +14,14 @@ public class Storage
     {
         _cache = cache;
 
-        _permaCachedPosts = Load<Dictionary<string, GenericApiPost>>("cachedPosts.json") ?? new();
+        _permaCachedPosts = new();
+        Dictionary<string, GenericFullApiPost>? loadResult =
+            Load<Dictionary<string, GenericFullApiPost>>("cachedPosts.json");
+
+        if (loadResult != null)
+            foreach (var (key, value) in loadResult)
+                _permaCachedPosts.Add(key, value.Generic());
+
         foreach (var (key, value) in _permaCachedPosts)
         {
             _cache.AddCacheValue(key, value, null);
