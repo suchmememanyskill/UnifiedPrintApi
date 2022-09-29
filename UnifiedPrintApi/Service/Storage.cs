@@ -7,37 +7,6 @@ namespace UnifiedPrintApi.Service;
 
 public class Storage
 {
-    private Cache _cache;
-    private Dictionary<string, GenericApiPost> _permaCachedPosts;
-
-    public Storage(Cache cache)
-    {
-        _cache = cache;
-
-        _permaCachedPosts = new();
-        Dictionary<string, GenericFullApiPost>? loadResult =
-            Load<Dictionary<string, GenericFullApiPost>>("cachedPosts.json");
-
-        if (loadResult != null)
-            foreach (var (key, value) in loadResult)
-                _permaCachedPosts.Add(key, value.Generic());
-
-        foreach (var (key, value) in _permaCachedPosts)
-        {
-            _cache.AddCacheValue(key, value, null);
-        }
-    }
-
-    public void AddPostToCache(IApiPost post)
-    {
-        if (_permaCachedPosts.ContainsKey(post.UniversalId))
-            return;
-        
-        _permaCachedPosts.Add(post.UniversalId, post.Generic());
-        _cache.AddCacheValue(post.UniversalId, post.Generic(), null);
-        Save("cachedPosts.json", _permaCachedPosts);
-    }
-
     public string CreateSaveStorage(string name)
     {
         string id = Guid.NewGuid().ToString();
@@ -68,7 +37,6 @@ public class Storage
         
         storage.UIDs.Add(post.UniversalId);
         Save(filename, storage);
-        AddPostToCache(post);
     }
 
     public void RemoveFromSaveStorage(string id, string uid)

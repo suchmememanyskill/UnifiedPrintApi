@@ -12,12 +12,10 @@ public class Posts : ControllerBase
 {
     private Apis _apis;
     private Cache _cache;
-    private Storage _storage;
-    public Posts(Apis apis, Cache cache, Storage storage)
+    public Posts(Apis apis, Cache cache)
     {
         _apis = apis;
         _cache = cache;
-        _storage = storage;
     }
 
     [HttpGet("services")]
@@ -90,7 +88,6 @@ public class Posts : ControllerBase
     [ProducesResponseType(typeof(IApiPost), StatusCodes.Status200OK)]
     public object? Post(string uid)
     {
-        _storage.BaseUrl = $"{Request.Scheme}://{Request.Host.Value}"; // Hack
         try
         {
             IApiPost? post = _apis.GetUID(uid);

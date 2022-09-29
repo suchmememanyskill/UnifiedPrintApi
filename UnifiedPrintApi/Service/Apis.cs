@@ -30,7 +30,7 @@ public class Apis
     public List<IApiDescription> GetApis() => _apis;
     public IApiDescription? GetApi(string slug) => GetApis().Find(x => x.Slug == slug);
     
-    public IApiPost? GetUID(string uid)
+    public IApiPost? GetUID(string uid, TimeSpan? cacheTime = null)
     {
         string service = uid.Split(":")[0];
         string id = uid.Substring(service.Length + 1);
@@ -41,6 +41,16 @@ public class Apis
             return null;
 
         string key = uid;
-        return _cache.CacheValue(key, () => api.GetPostById(id), TimeSpan.FromHours(3));
+        return _cache.CacheValue(key, () =>
+        {
+            try
+            {
+                return api.GetPostById(id);
+            }
+            catch
+            {
+                return null;
+            }
+        }, cacheTime ?? TimeSpan.FromHours(3));
     }
 }

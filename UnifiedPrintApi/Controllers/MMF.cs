@@ -9,18 +9,15 @@ namespace UnifiedPrintApi.Controllers;
 public class MMF : ControllerBase
 {
     private MMFApi _api;
-    private Storage _storage;
 
-    public MMF(MMFApi api, Storage storage)
+    public MMF(MMFApi api)
     {
         _api = api;
-        _storage = storage;
     }
     
     [HttpGet("{id}/download/{filename}")]
     public ActionResult GetMMFDownload(string id, string filename)
     {
-        _storage.BaseUrl = $"{Request.Scheme}://{Request.Host.Value}"; // Hack
         try
         {
             return File(_api.GetDownloadFromPost(id, filename), "application/octet-stream", filename);

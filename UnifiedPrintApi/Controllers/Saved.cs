@@ -28,7 +28,7 @@ public class Saved : ControllerBase
         return new()
         {
             CollectionName = storage.Name,
-            Posts = storage.UIDs.Select(x => _apis.GetUID(x)?.Generic() ?? null).Where(x => x != null).ToList()!
+            Posts = storage.UIDs.Select(x => _apis.GetUID(x, TimeSpan.FromDays(7))?.Generic() ?? null).Where(x => x != null).ToList()!
         };
     }
 
@@ -43,7 +43,7 @@ public class Saved : ControllerBase
     {
         try
         {
-            IApiPost? post = _apis.GetUID(data.UID);
+            IApiPost? post = _apis.GetUID(data.UID, TimeSpan.FromDays(7));
 
             if (post == null)
             {
@@ -58,7 +58,6 @@ public class Saved : ControllerBase
             Response.StatusCode = 400;
             return e.Message;
         }
-        
 
         return "OK";
     }
@@ -78,6 +77,4 @@ public class Saved : ControllerBase
         
         return "OK";
     }
-    
-    
 }
