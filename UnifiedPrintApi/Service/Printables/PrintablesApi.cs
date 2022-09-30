@@ -13,6 +13,8 @@ public record PrintablesSortType(string Name, string UrlPart)
 
 public class PrintablesApi : IApiDescription
 {
+    private static readonly string BASE_URL = "https://api.printables.com/graphql/";
+    
     public string Name => "Prusa Printables";
     public string Color => "#FA6831";
     public List<SortType> SortTypes => ActualSortTypes.Select(x => new SortType(x.Name, x.InternalName, null)).ToList();
@@ -91,7 +93,7 @@ public class PrintablesApi : IApiDescription
             .Replace("{{CURSOR}}", cursor)
             .Replace("{{DISPLAY}}", ordering);
 
-        string response = Request.PostString(new Uri("https://www.printables.com/graphql/"), json);
+        string response = Request.PostString(new Uri(BASE_URL), json);
 
         PrintList prints = JsonConvert.DeserializeObject<PrintList>(response);
         string nextKey = $"{dateLimit}:{perPage}:{page + 1}:{ordering}";
@@ -107,7 +109,7 @@ public class PrintablesApi : IApiDescription
             .Replace("{{LIMIT}}", perPage.ToString())
             .Replace("{{OFFSET}}", ((page - 1) * perPage).ToString());
             
-        string response = Request.PostString(new Uri("https://www.printables.com/graphql/"), json);
+        string response = Request.PostString(new Uri(BASE_URL), json);
             
         PrintList prints = JsonConvert.DeserializeObject<PrintList>(response);
         return new GenericApiPreviewPosts(prints.Data.SearchResult.Items.Select(x => new PrintablesPreviewPost(this, x)));
@@ -118,7 +120,7 @@ public class PrintablesApi : IApiDescription
         string template = ModelTemplate;
         string json = template.Replace("{{ID}}", id);
             
-        string response = Request.PostString(new Uri("https://www.printables.com/graphql/"), json);
+        string response = Request.PostString(new Uri(BASE_URL), json);
 
         PrintModelData model = JsonConvert.DeserializeObject<PrintModelData>(response);
 

@@ -24,12 +24,19 @@ public class Saved : ControllerBase
     [HttpGet("{token}")]
     public SavedToken GetSavedPosts(string token)
     {
+        Storage.BaseUrl = $"{Request.Scheme}://{Request.Host.Value}";
         SaveStorage storage = _storage.GetSaveStorage(token);
         return new()
         {
             CollectionName = storage.Name,
             Posts = storage.UIDs.Select(x => _apis.GetUID(x, TimeSpan.FromDays(7))?.Generic() ?? null).Where(x => x != null).ToList()!
         };
+    }
+    
+    [HttpGet("{token}/uids")]
+    public SaveStorage GetSavedPostsUids(string token)
+    {
+        return _storage.GetSaveStorage(token);
     }
 
     [HttpPost]

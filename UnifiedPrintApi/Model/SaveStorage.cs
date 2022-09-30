@@ -1,4 +1,6 @@
-﻿namespace UnifiedPrintApi.Model;
+﻿using System.Text.Json.Serialization;
+
+namespace UnifiedPrintApi.Model;
 
 public class SaveStorage
 {
