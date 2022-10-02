@@ -26,10 +26,13 @@ public class Saved : ControllerBase
     {
         Storage.BaseUrl = $"{Request.Scheme}://{Request.Host.Value}";
         SaveStorage storage = _storage.GetSaveStorage(token);
+        List<string> uids = new(storage.UIDs);
+        uids.Reverse();
+        
         return new()
         {
             CollectionName = storage.Name,
-            Posts = storage.UIDs.Select(x => _apis.GetUID(x, TimeSpan.FromDays(7))?.Generic() ?? null).Where(x => x != null).ToList()!
+            Posts = uids.Select(x => _apis.GetUID(x, TimeSpan.FromDays(7))?.Generic() ?? null).Where(x => x != null).ToList()!
         };
     }
     
