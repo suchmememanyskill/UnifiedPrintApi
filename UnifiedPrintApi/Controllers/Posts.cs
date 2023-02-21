@@ -88,7 +88,6 @@ public class Posts : ControllerBase
     [ProducesResponseType(typeof(IApiPost), StatusCodes.Status200OK)]
     public object? Post(string uid)
     {
-        Storage.BaseUrl = $"{Request.Scheme}://{Request.Host.Value}";
         try
         {
             IApiPost? post = _apis.GetUID(uid);

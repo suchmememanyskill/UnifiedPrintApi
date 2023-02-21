@@ -18,7 +18,6 @@ public class MMF : ControllerBase
     [HttpGet("{id}/download/{filename}")]
     public ActionResult GetMMFDownload(string id, string filename)
     {
-        Storage.BaseUrl = $"{Request.Scheme}://{Request.Host.Value}";
         try
         {
             return File(_api.GetDownloadFromPost(id, filename), "application/octet-stream", filename);

@@ -71,6 +71,4 @@ public class Storage
 
         File.WriteAllText(path, JsonConvert.SerializeObject(data));
     }
-    
-    public static string? BaseUrl { get; set; }
 }

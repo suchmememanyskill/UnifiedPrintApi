@@ -66,7 +66,7 @@ public class MMFApi : IApiDescription
             return null;
 
         FetchSpecificObject result = JsonConvert.DeserializeObject<FetchSpecificObject>(response);
-        return new MMFPost(this, result, Storage.BaseUrl!);
+        return new MMFPost(this, result);
     }
 
     public Stream GetDownloadFromPost(string id, string fileName)

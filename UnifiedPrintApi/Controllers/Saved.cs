@@ -24,7 +24,6 @@ public class Saved : ControllerBase
     [HttpGet("{token}")]
     public SavedToken GetSavedPosts(string token)
     {
-        Storage.BaseUrl = $"{Request.Scheme}://{Request.Host.Value}";
         SaveStorage storage = _storage.GetSaveStorage(token);
         List<string> uids = new(storage.UIDs);
         uids.Reverse();

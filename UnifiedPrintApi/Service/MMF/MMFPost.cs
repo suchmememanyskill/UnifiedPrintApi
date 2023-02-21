@@ -12,11 +12,13 @@ public class MMFPost : IApiPost
     private MMFApi _api;
     private string _baseUrl;
 
-    public MMFPost(MMFApi api, FetchSpecificObject data, string baseUrl)
+    public MMFPost(MMFApi api, FetchSpecificObject data)
     {
         _api = api;
         _data = data;
-        _baseUrl = baseUrl;
+        _baseUrl = Environment.GetEnvironmentVariable("BASE_URL");
+        if (_baseUrl == null)
+            throw new Exception("BASE_URL enviroment variable not set");
     }
 
     public string Id => _data.Id.ToString();
