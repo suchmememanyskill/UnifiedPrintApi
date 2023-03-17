@@ -13,7 +13,7 @@ public class ThingiverseAuthor : IApiAuthor
         _creator = creator;
     }
 
-    public string Name => _creator.Name;
-    public Uri Website => _creator.PublicUrl;
-    public GenericFile Thumbnail => new(_creator.Thumbnail);
+    public string Name => _creator?.Name ?? "INVALID";
+    public Uri Website => _creator?.PublicUrl ?? new("https://www.thingiverse.com");
+    public GenericFile Thumbnail => (_creator == null) ? null : new(_creator.Thumbnail);
 }
