@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Web;
+using Newtonsoft.Json;
 using UnifiedPrintApi.Model.Interfaces;
 using UnifiedPrintApi.Model.Interfaces.Generic;
 using UnifiedPrintApi.Service.Thingiverse.Models;
@@ -101,7 +102,7 @@ public class ThingiverseApi : IApiDescription
                     $"https://api.thingiverse.com/search/?page={current / apiLimit + 1}&per_page={apiLimit}&{ttype.UrlPart}&type=things";
             else
                 url =
-                    $"https://api.thingiverse.com/search/{search}?page={current / apiLimit + 1}&per_page={apiLimit}&sort=relevant&type=things";
+                    $"https://api.thingiverse.com/search/{HttpUtility.UrlEncode(search)}?page={current / apiLimit + 1}&per_page={apiLimit}&sort=relevant&type=things";
             
             string? response = MakeRequest(url);
 
