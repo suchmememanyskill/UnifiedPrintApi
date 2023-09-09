@@ -49,15 +49,8 @@ namespace Utils
                     client.DefaultRequestHeaders.Add(kv.Key, kv.Value);
                 
                 var response = client.GetAsync(uri).GetAwaiter().GetResult();
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    Console.WriteLine($"Request failed! Code: {response.StatusCode}");
-                }
-                string data = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                
-                Console.WriteLine($"Response: {data}");
-                return data;
+                Console.WriteLine($"Response ({response.StatusCode})");
+                return response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             }
         }
 
