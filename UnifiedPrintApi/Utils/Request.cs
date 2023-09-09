@@ -42,13 +42,21 @@ namespace Utils
         public static string GetString(Uri uri, Dictionary<string, string> headers)
         {
             Console.WriteLine($"Sending request to {uri}");
-            using (var client = new WebClient())
+
+            using (var client = new HttpClient())
             {
                 foreach (var kv in headers)
-                    client.Headers[kv.Key] = kv.Value;
-                return client.DownloadString(uri);
-            }
+                    client.DefaultRequestHeaders.Add(kv.Key, kv.Value);
+                
+                var response = client.GetAsync(uri).GetAwaiter().GetResult();
 
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"Request failed! Code: {response.StatusCode}");
+                }
+                
+                return response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            }
         }
 
         public static async Task<string> GetStringAsync(Uri uri, Dictionary<string, string> headers)
