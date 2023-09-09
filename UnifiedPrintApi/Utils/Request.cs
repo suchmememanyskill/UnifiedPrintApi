@@ -54,8 +54,10 @@ namespace Utils
                 {
                     Console.WriteLine($"Request failed! Code: {response.StatusCode}");
                 }
+                string data = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                 
-                return response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                Console.WriteLine($"Response: {data}");
+                return data;
             }
         }
 
