@@ -10,6 +10,9 @@ namespace UnifiedPrintApi.Service.Printables.Model
 
     public class PrintListData
     {
+        [JsonProperty("prints")]
+        public List<PrintablesItemFeatured> FeaturedPrints { get; set; }
+        
         [JsonProperty("morePrints")]
         public MorePrints MorePrints { get; set; }
         
@@ -50,6 +53,17 @@ namespace UnifiedPrintApi.Service.Printables.Model
         
         public Uri ToUri() => new Uri($"https://www.printables.com/model/{Id}-{Slug}");
         
+    }
+
+    public class PrintablesItemFeatured : PrintablesItem
+    {
+        public override List<PrintablesImage> Images => new()
+        {
+            Image
+        };
+        
+        [JsonProperty("image", NullValueHandling = NullValueHandling.Ignore)]
+        public virtual PrintablesImage Image { get; set; }
     }
 
     public class PrintableItemSearch : PrintablesItem
