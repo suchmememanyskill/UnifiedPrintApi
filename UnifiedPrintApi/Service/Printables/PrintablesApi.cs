@@ -123,10 +123,13 @@ public class PrintablesApi : IApiDescription
 
     public IApiPreviewPosts GetPostsByFeatured(int page, int perPage)
     {
+        if (page <= 0)
+            throw new Exception("Invalid page number");
+        
         string hash = Cache.Hash("Printables-Featured");
         string response = _cache.CacheValue(hash, () => Request.PostString(new Uri(BASE_URL), FeaturedTemplate))!;
         PrintList prints = JsonConvert.DeserializeObject<PrintList>(response)!;
-        return new GenericApiPreviewPosts(prints.Data.FeaturedPrints.Skip(page * perPage).Take(perPage).Select(x => new PrintablesPreviewPost(this, x)));
+        return new GenericApiPreviewPosts(prints.Data.FeaturedPrints.Skip((page - 1) * perPage).Take(perPage).Select(x => new PrintablesPreviewPost(this, x)));
     }
 
     public IApiPost? GetPostById(string id)
