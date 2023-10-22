@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Web;
+using Newtonsoft.Json;
 using UnifiedPrintApi.Model.Interfaces;
 using UnifiedPrintApi.Model.Interfaces.Generic;
 using UnifiedPrintApi.Service.Thingiverse.Models;
@@ -11,11 +12,16 @@ public class ThingiversePost : IApiPost
     private ThingiverseApi _api;
     private List<RequestDownload>? _downloads;
     private List<RequestImage>? _images;
+    private string _baseUrl;
     
     public ThingiversePost(ThingiverseApi api, RequestSpecificThing data)
     {
         _api = api;
         _data = data;
+        
+        _baseUrl = Environment.GetEnvironmentVariable("BASE_URL") ?? "http://localhost";
+        if (_baseUrl == null)
+            throw new Exception("BASE_URL enviroment variable not set");
     }
 
     public void GetDownloads()
@@ -48,7 +54,8 @@ public class ThingiversePost : IApiPost
 
     public List<GenericFile> Images => _images!.Select(x =>
         new GenericFile(x.Name, x.Sizes.First(y => y.Type == "display" && y.SizeSize == "large").Url)).ToList();
-    public List<GenericFile> Downloads => _downloads!.Select(x => new GenericFile(x.Name, x.PublicUrl)).ToList();
+    public List<GenericFile> Downloads => _downloads!.Select(x => new GenericFile(x.Name, 
+        new Uri(x.PublicUrl.ToString().Replace("https://www.thingiverse.com/download:", $"{_baseUrl}/thingiverse/download/") + $"?filename={HttpUtility.UrlEncode(x.Name)}"))).ToList();
     public DateTimeOffset Added => _data.Added;
     public DateTimeOffset Modified => _data.Modified;
     public long DownloadCount => _data.DownloadCount;

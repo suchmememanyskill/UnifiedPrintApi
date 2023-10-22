@@ -132,4 +132,11 @@ public class ThingiverseApi : IApiDescription
 
         return new GenericApiPreviewPosts(posts.Skip(diff).Take(max - min), total);
     }
+
+    public Stream GetPostDownload(string id)
+    {
+        HttpClient client = new();
+        client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/118.0");
+        return client.GetStreamAsync(new Uri($"https://www.thingiverse.com/download:{id}")).GetAwaiter().GetResult();
+    }
 }
