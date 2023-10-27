@@ -67,10 +67,18 @@ namespace Utils
         
         public static string PostString(Uri uri, string data)
         {
-            using (var client = new WebClient())
+            try
             {
-                client.Headers["Content-Type"] = "application/json";
-                return client.UploadString(uri, data);
+                using (var client = new WebClient())
+                {
+                    client.Headers["Content-Type"] = "application/json";
+                    return client.UploadString(uri, data);
+                }
+            }
+            catch
+            {
+                ProxySender proxySender = ProxySender.GetDefault();
+                return proxySender.Post(uri, data).GetAwaiter().GetResult();
             }
         }
 
