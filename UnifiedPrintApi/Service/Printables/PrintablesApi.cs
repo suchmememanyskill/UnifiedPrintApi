@@ -99,7 +99,15 @@ public class PrintablesApi : IApiDescription
             .Replace("{{CURSOR}}", cursor)
             .Replace("{{DISPLAY}}", ordering);
 
-        string response = Request.PostString(new Uri(BASE_URL), json);
+        string response;
+        try
+        {
+            response = Request.PostString(new Uri(BASE_URL), json);
+        }
+        catch
+        {
+            return new GenericApiPreviewPosts(new List<PrintablesPreviewPost>(), 0);
+        }
 
         PrintList prints = JsonConvert.DeserializeObject<PrintList>(response);
         string nextKey = $"{dateLimit}:{perPage}:{page + 1}:{ordering}";
@@ -114,8 +122,17 @@ public class PrintablesApi : IApiDescription
             .Replace("{{QUERY}}", search)
             .Replace("{{LIMIT}}", perPage.ToString())
             .Replace("{{OFFSET}}", ((page - 1) * perPage).ToString());
-            
-        string response = Request.PostString(new Uri(BASE_URL), json);
+
+        string response;
+        try
+        {
+            response = Request.PostString(new Uri(BASE_URL), json);
+        }
+        catch
+        {
+            return new GenericApiPreviewPosts(new List<PrintablesPreviewPost>(), 0);
+        }
+         
             
         PrintList prints = JsonConvert.DeserializeObject<PrintList>(response);
         return new GenericApiPreviewPosts(prints.Data.SearchResult.Items.Select(x => new PrintablesPreviewPost(this, x)));
@@ -127,7 +144,16 @@ public class PrintablesApi : IApiDescription
             throw new Exception("Invalid page number");
         
         string hash = Cache.Hash("Printables-Featured");
-        string response = _cache.CacheValue(hash, () => Request.PostString(new Uri(BASE_URL), FeaturedTemplate))!;
+        string response;
+        try
+        {
+            response = _cache.CacheValue(hash, () => Request.PostString(new Uri(BASE_URL), FeaturedTemplate))!;
+        }
+        catch
+        {
+            return new GenericApiPreviewPosts(new List<PrintablesPreviewPost>(), 0);
+        }
+        
         PrintList prints = JsonConvert.DeserializeObject<PrintList>(response)!;
         return new GenericApiPreviewPosts(prints.Data.FeaturedPrints.Skip((page - 1) * perPage).Take(perPage).Select(x => new PrintablesPreviewPost(this, x)));
     }
@@ -136,8 +162,17 @@ public class PrintablesApi : IApiDescription
     {
         string template = ModelTemplate;
         string json = template.Replace("{{ID}}", id);
-            
-        string response = Request.PostString(new Uri(BASE_URL), json);
+
+        string response;
+        try
+        {
+            response = Request.PostString(new Uri(BASE_URL), json);
+        }
+        catch
+        {
+            return null;
+        }
+         
 
         PrintModelData model = JsonConvert.DeserializeObject<PrintModelData>(response);
 
