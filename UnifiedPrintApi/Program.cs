@@ -1,4 +1,5 @@
 using UnifiedPrintApi.Service;
+using UnifiedPrintApi.Service.MakerWorld;
 using UnifiedPrintApi.Service.MMF;
 using UnifiedPrintApi.Service.Printables;
 using UnifiedPrintApi.Service.Thingiverse;
@@ -16,6 +17,7 @@ builder.Services.AddSingleton<Cache>();
 builder.Services.AddSingleton<ThingiverseApi>();
 builder.Services.AddSingleton<MMFApi>();
 builder.Services.AddSingleton<PrintablesApi>();
+builder.Services.AddSingleton<MakerWorldApi>();
 builder.Services.AddSingleton<Apis>();
 builder.Services.AddSingleton<Storage>();
 

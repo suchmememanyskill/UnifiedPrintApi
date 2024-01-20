@@ -1,4 +1,5 @@
 ﻿using UnifiedPrintApi.Model.Interfaces;
+using UnifiedPrintApi.Service.MakerWorld;
 using UnifiedPrintApi.Service.MMF;
 using UnifiedPrintApi.Service.Printables;
 using UnifiedPrintApi.Service.Thingiverse;
@@ -10,20 +11,23 @@ public class Apis
     private ThingiverseApi _thingiverse;
     private MMFApi _mmf;
     private PrintablesApi _printables;
+    private MakerWorldApi _makerWorld;
     private Cache _cache;
     private List<IApiDescription> _apis;
 
-    public Apis(ThingiverseApi thingiverse, MMFApi mmf, PrintablesApi printables, Cache cache)
+    public Apis(ThingiverseApi thingiverse, MMFApi mmf, PrintablesApi printables, MakerWorldApi makerWorld, Cache cache)
     {
         _thingiverse = thingiverse;
         _cache = cache;
         _mmf = mmf;
         _printables = printables;
+        _makerWorld = makerWorld;
         _apis = new()
         {
             _thingiverse,
             _mmf,
-            _printables
+            _printables,
+            _makerWorld
         };
     }
 
