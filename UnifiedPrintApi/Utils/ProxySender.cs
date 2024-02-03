@@ -45,14 +45,15 @@ public class ProxySender
                 string response = await httpResponse.Content.ReadAsStringAsync();
                 if (response.Contains("API limited"))
                     throw new Exception($"Api limited: {response}");
-
-                await Task.Delay(1000); // Don't spam the servers
+                
                 return response;
             }
             catch (Exception e)
             {
                 Console.WriteLine($"Request failed! {e.Message}");
             }
+            
+            await Task.Delay(1000);
         }
 
         throw new Exception($"Request failed after 3 retries");
