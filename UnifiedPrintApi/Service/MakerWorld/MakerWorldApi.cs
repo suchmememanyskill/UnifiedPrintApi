@@ -72,7 +72,7 @@ public class MakerWorldApi : IApiDescription
     public IApiPost? GetPostById(string id)
     {
         string response = Request.GetString(
-            new($"https://makerworld.com/_next/data/3FJ6MOE0y3DiMsxjj5jNt/en/models/{id}.json?designId={id}"));
+            new($"https://makerworld.com/_next/data/dY57oB-ODVHToyv8s__1B/en/models/{id}.json?designId={id}"));
 
         MWRootModel props = JsonConvert.DeserializeObject<MWRootModel>(response)!;
         props.PageProps.Design.Api = this;

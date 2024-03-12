@@ -57,18 +57,23 @@ namespace UnifiedPrintApi.Service.Printables.Model
 
     public class DownloadableModel
     {
+        private string _baseUrl = Environment.GetEnvironmentVariable("BASE_URL");
+        
         [JsonProperty("id")]
         public string Id { get; set; }
         
         [JsonProperty("name")]
         public string Name { get; set; }
         
-        [JsonProperty("filePath")]
-        public string FilePath { get; set; }
+        [JsonProperty("filePreviewPath")]
+        public string FilePreviewPath { get; set; }
         
         [JsonProperty("fileSize")]
         public long FileSize { get; set; }
         
-        public Uri ToUri() => new Uri($"https://media.printables.com/{FilePath}");
+        [JsonProperty("__typename")]
+        public string Type { get; set; }
+        
+        public Uri ToUri(string postId) => new Uri($"{_baseUrl}/printables/download?fileId={Id}&fileType={Type}&postId={postId}");
     }
 }

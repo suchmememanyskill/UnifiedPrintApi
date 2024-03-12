@@ -17,7 +17,8 @@
       "applicationUrl": "http://localhost:8520",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "PORT": "8520"
+        "PORT": "8520",
+        "BASE_URL": "http://localhost:8520"
       }
     },
     "IIS Express": {

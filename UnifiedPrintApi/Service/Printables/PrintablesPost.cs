@@ -24,7 +24,7 @@ public class PrintablesPost : IApiPost
     public IApiDescription Api => _api;
     public string Description => _data.Description; // TODO: De-Html-Ify
     public List<GenericFile> Images => _data.Images.Select(x => new GenericFile(x.ToUri())).ToList();
-    public List<GenericFile> Downloads => _data.Models.Select(x => new GenericFile(x.Name, x.ToUri())).ToList();
+    public List<GenericFile> Downloads => _data.Models.Select(x => new GenericFile(x.Name, x.ToUri(_data.Id))).ToList();
     public DateTimeOffset Added => _data.Published;
     public DateTimeOffset Modified => _data.Modified;
     public long DownloadCount => _data.DownloadCount;
