@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 using UnifiedPrintApi.Model.Interfaces;
 using UnifiedPrintApi.Service.MakerWorld.Models;
 using Utils;
@@ -71,8 +72,30 @@ public class MakerWorldApi : IApiDescription
 
     public IApiPost? GetPostById(string id)
     {
+        var key = _cache.CacheValue("__makerworld_build_key__", () =>
+        {
+            try
+            {
+                var mainWebpage = Request.GetString(new("https://makerworld.com/en"));
+                var pattern = @"\/_next\/static\/[^/]*\/_buildManifest\.js";
+                var rg = new Regex(pattern);
+                return rg.Matches(mainWebpage).Single().Value[14..^18];
+            }
+            catch
+            {
+                return null;
+            }
+        }, TimeSpan.FromDays(1));
+
+        if (key == null)
+        {
+            return null;
+        }
+        
+        Console.WriteLine($"Got MakerWorld key: {key}");
+        
         string response = Request.GetString(
-            new($"https://makerworld.com/_next/data/9pcBnLircBwtFro6Zc4FZ/en/models/{id}.json?designId={id}"));
+            new($"https://makerworld.com/_next/data/{key}/en/models/{id}.json?designId={id}"));
 
         MWRootModel props = JsonConvert.DeserializeObject<MWRootModel>(response)!;
         props.PageProps.Design.Api = this;
