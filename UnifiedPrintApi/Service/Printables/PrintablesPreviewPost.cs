@@ -17,7 +17,17 @@ public class PrintablesPreviewPost : IApiPreviewPost
 
     public string Id => _data.Id;
     public string Name => _data.Name;
-    public GenericFile Thumbnail => new(_data.Images.First().ToUri());
+
+    public GenericFile Thumbnail
+    {
+        get
+        {
+            if (_data.Images != null && _data.Images.Count > 0)
+                return new(_data.Images.First().ToUri());
+
+            return new(_data.Image.ToUri());
+        }
+    }
     public Uri Website => _data.ToUri();
     public IApiAuthor Author => new PrintablesAuthor(_data.User);
     public IApiDescription Api => _api;

@@ -45,6 +45,9 @@ namespace UnifiedPrintApi.Service.Printables.Model
         [JsonProperty("slug")]
         public string Slug { get; set; }
         
+        [JsonProperty("image")]
+        public PrintablesImage Image { get; set; }
+        
         [JsonProperty("images", NullValueHandling = NullValueHandling.Ignore)]
         public virtual List<PrintablesImage> Images { get; set; }
         
