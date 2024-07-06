@@ -26,7 +26,7 @@ public class MWDesign : IApiPost
 
     public List<GenericFile> Images => DesignExtension.DesignPictures.Select(x => x.ToGenericFile()).ToList();
 
-    public List<GenericFile> Downloads => DesignExtension.ModelFiles.Select(x => x.ToGenericFiles()).SelectMany(x => x).ToList();
+    public List<GenericFile> Downloads => DesignExtension.ModelFiles.Where(x => x.ModelUrl != null).Select(x => x.ToGenericFiles()).SelectMany(x => x).ToList();
 
     [JsonProperty("createTime")]
     public DateTimeOffset Added { get; set; }
