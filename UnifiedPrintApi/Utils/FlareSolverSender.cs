@@ -14,6 +14,11 @@ public class FlareSolverRequest
 
 public class FlareSolverResponse
 {
+    private static readonly List<int> _validStatusCodes = new List<int>()
+    {
+        0, 200
+    };
+    
     [JsonProperty("solution")]
     public FlareSolverResponseSolution Solution { get; set; }
     
@@ -22,7 +27,7 @@ public class FlareSolverResponse
 
     public void EnsureSuccessfulRequest()
     {
-        if (Status != "ok" || Solution.Status != 200)
+        if (Status != "ok" || !_validStatusCodes.Contains(Solution.Status))
         {
             throw new Exception("Request failed");
         }
