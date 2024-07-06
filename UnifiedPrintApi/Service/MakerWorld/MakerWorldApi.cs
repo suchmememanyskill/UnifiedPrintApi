@@ -38,21 +38,45 @@ public class MakerWorldApi : IApiDescription
         _cache = cache;
     }
 
+    public string? GetMakerWorldKey()
+    {
+        return _cache.CacheValue("__makerworld_build_key__", () =>
+        {
+            try
+            {
+                var mainWebpage = Request.GetStringWithFlareSolver(new("https://makerworld.com/en"));
+                var pattern = @"\/_next\/static\/[^/]*\/_buildManifest\.js";
+                var rg = new Regex(pattern);
+                return rg.Matches(mainWebpage).Single().Value[14..^18];
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }, TimeSpan.FromDays(1));
+    }
+    
     public IApiPreviewPosts GetPosts(SortType type, int page, int perPage)
     {
         MakerWorldSortType sortType = MakerWorldSortType.Types.Find(x => x.Name == type.DisplayName)!;
 
         if (sortType.UrlPart == "FEATURED")
         {
-            string featuredResponse = Request.GetString(
-                new("https://makerworld.com/_next/data/d4zmgsEtfmVIYgKhDGSAR/en.json"));
+            var key = GetMakerWorldKey();
+            if (key == null)
+            {
+                throw new Exception("Failed to get makerworld key");
+            }
+            
+            string featuredResponse = Request.GetStringWithFlareSolver(
+                new($"https://makerworld.com/_next/data/{key}/en.json"));
 
             MWRootFeatured props = JsonConvert.DeserializeObject<MWRootFeatured>(featuredResponse)!;
             props.PageProps?.Designs.ForEach(x => x.Design.Api = this);
             return props.PageProps;
         }
         
-        string response = Request.GetString(
+        string response = Request.GetStringWithFlareSolver(
             new($"https://makerworld.com/api/v1/search-service/select/design?{sortType.UrlPart}&keyword=&limit={perPage}&offset={(page - 1) * perPage}"));
 
         MWSearch search = JsonConvert.DeserializeObject<MWSearch>(response)!;
@@ -62,7 +86,7 @@ public class MakerWorldApi : IApiDescription
 
     public IApiPreviewPosts GetPostsBySearch(string search, int page, int perPage)
     {
-        string response = Request.GetString(
+        string response = Request.GetStringWithFlareSolver(
             new($"https://makerworld.com/api/v1/search-service/select/design?orderBy=score&keyword={search}&limit={perPage}&offset={(page - 1) * perPage}"));
         
         MWSearch mwSearch = JsonConvert.DeserializeObject<MWSearch>(response)!;
@@ -72,20 +96,7 @@ public class MakerWorldApi : IApiDescription
 
     public IApiPost? GetPostById(string id)
     {
-        var key = _cache.CacheValue("__makerworld_build_key__", () =>
-        {
-            try
-            {
-                var mainWebpage = Request.GetString(new("https://makerworld.com/en"));
-                var pattern = @"\/_next\/static\/[^/]*\/_buildManifest\.js";
-                var rg = new Regex(pattern);
-                return rg.Matches(mainWebpage).Single().Value[14..^18];
-            }
-            catch
-            {
-                return null;
-            }
-        }, TimeSpan.FromDays(1));
+        var key = GetMakerWorldKey();
 
         if (key == null)
         {
@@ -94,7 +105,7 @@ public class MakerWorldApi : IApiDescription
         
         Console.WriteLine($"Got MakerWorld key: {key}");
         
-        string response = Request.GetString(
+        string response = Request.GetStringWithFlareSolver(
             new($"https://makerworld.com/_next/data/{key}/en/models/{id}.json?designId={id}"));
 
         MWRootModel props = JsonConvert.DeserializeObject<MWRootModel>(response)!;

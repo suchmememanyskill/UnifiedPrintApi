@@ -37,6 +37,12 @@ namespace Utils
 
         public static string GetString(Uri uri) => GetString(uri, new());
 
+        public static string GetStringWithFlareSolver(Uri uri)
+        {
+            var solver = new FlareSolverSender();
+            return solver.Get(uri);
+        }
+
         public static async Task<string> GetStringAsync(Uri uri) => await GetStringAsync(uri, new());
 
         public static string GetString(Uri uri, Dictionary<string, string> headers)
