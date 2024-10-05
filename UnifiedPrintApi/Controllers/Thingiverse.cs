@@ -18,11 +18,11 @@ public class Thingiverse : ControllerBase
     }
     
     [HttpGet("download/{id}")]
-    public ActionResult GetThingiverseDownload(string id, string filename)
+    public async Task<IActionResult> GetThingiverseDownload(string id, string filename)
     {
         try
         {
-            return File(_api.GetPostDownload(id), "application/octet-stream", filename);
+            return File(await _api.GetPostDownload(id), "application/octet-stream", filename);
         }
         catch (Exception e)
         {
@@ -41,7 +41,7 @@ public class Thingiverse : ControllerBase
         {
             return BadRequest();
         }
-        
+
         return File(content, response.Content.Headers.ContentType.ToString(), img.Split("/").Last());
     }
 }
