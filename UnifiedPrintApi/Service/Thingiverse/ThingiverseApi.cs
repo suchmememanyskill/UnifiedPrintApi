@@ -57,7 +57,7 @@ public class ThingiverseApi : IApiDescription
         => GetPostsBySearchOrSortType(page, perPage, null, search);
     public IApiPost? GetPostById(string id)
     {
-        string url = $"https://api.thingiverse.com/things/{id}";
+        string url = $"https://www.thingiverse.com/api/things/{id}";
         string? response;
 
         try
@@ -104,10 +104,10 @@ public class ThingiverseApi : IApiDescription
 
             if (ttype != null)
                 url =
-                    $"https://api.thingiverse.com/search/?page={current / apiLimit + 1}&per_page={apiLimit}&{ttype.UrlPart}&type=things";
+                    $"https://www.thingiverse.com/api/search/?page={current / apiLimit + 1}&per_page={apiLimit}&{ttype.UrlPart}&type=things";
             else
                 url =
-                    $"https://api.thingiverse.com/search/{HttpUtility.UrlEncode(search)}?page={current / apiLimit + 1}&per_page={apiLimit}&sort=relevant&type=things";
+                    $"https://www.thingiverse.com/api/search/{HttpUtility.UrlEncode(search)}?page={current / apiLimit + 1}&per_page={apiLimit}&sort=relevant&type=things";
             
             string? response = MakeRequest(url);
 
