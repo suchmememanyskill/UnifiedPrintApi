@@ -24,7 +24,7 @@ public class ThingiversePost : IApiPost
 
     public void GetDownloads()
     {
-        string? response = _api.MakeRequest(_data.FilesUrl.AbsoluteUri);
+        string? response = _api.MakeRequest($"https://www.thingiverse.com/api/things/{_data.Id}/files", $"https://www.thingiverse.com/thing:{_data.Id}");
 
         if (response == null)
             throw new Exception("Request failed");
@@ -34,7 +34,7 @@ public class ThingiversePost : IApiPost
 
     public void GetImages()
     {
-        string? response = _api.MakeRequest(_data.ImagesUrl.AbsoluteUri);
+        string? response = _api.MakeRequest($"https://www.thingiverse.com/api/things/{_data.Id}/images", $"https://www.thingiverse.com/thing:{_data.Id}");
         
         if (response == null)
             throw new Exception("Request failed");

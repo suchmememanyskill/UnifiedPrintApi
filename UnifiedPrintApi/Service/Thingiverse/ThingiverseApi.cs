@@ -38,7 +38,7 @@ public class ThingiverseApi : IApiDescription
         _cache = cache;
     }
 
-    public string? MakeRequest(string url)
+    public string? MakeRequest(string url, string referer = "https://www.thingiverse.com/")
     {
         string hash = Cache.Hash(url);
         return _cache.CacheValue<string>(hash,
@@ -46,7 +46,7 @@ public class ThingiverseApi : IApiDescription
             {
                 {"Authorization", apiKey},
                 {"User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/118.0"},
-                {"Referer", "https://www.thingiverse.com/"}
+                {"Referer", referer}
             }));
     }
 
