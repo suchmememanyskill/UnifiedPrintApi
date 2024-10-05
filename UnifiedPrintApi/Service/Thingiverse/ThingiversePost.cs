@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using UnifiedPrintApi.Model.Interfaces;
 using UnifiedPrintApi.Model.Interfaces.Generic;
 using UnifiedPrintApi.Service.Thingiverse.Models;
+using Utils;
 
 namespace UnifiedPrintApi.Service.Thingiverse;
 
@@ -18,10 +19,7 @@ public class ThingiversePost : IApiPost
     {
         _api = api;
         _data = data;
-        
-        _baseUrl = Environment.GetEnvironmentVariable("BASE_URL") ?? "http://localhost";
-        if (_baseUrl == null)
-            throw new Exception("BASE_URL enviroment variable not set");
+        _baseUrl = EnvironmentManager.BaseUrl;
     }
 
     public void GetDownloads()
@@ -53,7 +51,7 @@ public class ThingiversePost : IApiPost
     public string Description => _data.Description;
 
     public List<GenericFile> Images => _images!.Select(x =>
-        new GenericFile(x.Name, x.Sizes.First(y => y.Type == "display" && y.SizeSize == "large").Url)).ToList();
+        new GenericFile(x.Name, new(x.Sizes.First(y => y.Type == "display" && y.SizeSize == "large").Url.AbsoluteUri.Replace("https://cdn.thingiverse.com/assets/", $"{_baseUrl}/thingiverse/download_img/")))).ToList();
     public List<GenericFile> Downloads => _downloads!.Select(x => new GenericFile(x.Name, 
         new Uri(x.PublicUrl.ToString().Replace("https://www.thingiverse.com/download:", $"{_baseUrl}/thingiverse/download/") + $"?filename={HttpUtility.UrlEncode(x.Name)}"))).ToList();
     public DateTimeOffset Added => _data.Added;
