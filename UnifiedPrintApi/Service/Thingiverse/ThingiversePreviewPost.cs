@@ -19,8 +19,11 @@ public class ThingiversePreviewPost : IApiPreviewPost
 
     public string Id => _hit.Id.ToString();
     public string Name => _hit.Name;
-    public GenericFile Thumbnail => new(new(_hit.Thumbnail.AbsoluteUri.Replace("https://cdn.thingiverse.com/assets/", $"{_baseUrl}/thingiverse/download_img/")));
+    public GenericFile Thumbnail => new(new(GetThumbnail().AbsoluteUri.Replace("https://cdn.thingiverse.com/assets/", $"{_baseUrl}/thingiverse/download_img/")));
     public Uri Website => _hit.PublicUrl;
     public IApiAuthor Author => new ThingiverseAuthor(_hit.Creator);
     public IApiDescription Api => _api;
+
+    private Uri GetThumbnail()
+        => _hit.PreviewImage != null ? _hit.PreviewImage : _hit.Thumbnail;
 }
